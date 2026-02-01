@@ -1,23 +1,8 @@
-from sqlalchemy import Column, PrimaryKeyConstraint, String, Integer
 from sqlalchemy.orm import Session
 from typing import List
 
-from .database import Base
+from models.course_corequisite import CourseCorequisite
 
-
-class CourseCorequisite(Base):
-    __tablename__ = 'course_corequisite'
-
-    department = Column(String(length=255))
-    level = Column(Integer)
-    corequisite = Column(String(length=255))
-
-    __table_args__ = (
-        PrimaryKeyConstraint('department', 'level', 'corequisite'),
-    )
-
-
-# --- Corequisite operations ---
 
 def add_corequisite(db: Session, department: str, level: int, corequisite: str) -> CourseCorequisite:
     """Adds a new corequisite relationship."""
