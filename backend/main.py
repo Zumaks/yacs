@@ -2,10 +2,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
-import os
 
 from routers import user_router, auth_router, corequisite_router
 from models import init_db
+from utils import load_secrets
 
 
 # --- Lifespan (startup/shutdown events) ---
@@ -21,7 +21,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 # --- Add Middleware ---
-app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SECRET_KEY", "dev_secret_key"))
+secrets = load_secrets()
+app.add_middleware(SessionMiddleware, secret_key=secrets.get("SECRET_KEY", "dev_secret_key"))
 
 # --- Include Routers ---
 app.include_router(user_router.router)

@@ -1,13 +1,17 @@
-import os
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-DB_NAME = os.environ.get('DB_NAME', 'yacsdb')
-DB_USER = os.environ.get('DB_USER', 'yacs')
-DB_HOST = os.environ.get('DB_HOST', 'db')
-DB_PORT = os.environ.get('DB_PORT', '5432')
-DB_PASS = os.environ.get('DB_PASS', 'yacs')
+from utils import load_config, load_secrets
+
+# Load configuration and secrets from YAML files
+config = load_config()
+secrets = load_secrets()
+
+DB_NAME = config.get('DB_NAME', 'yacsdb')
+DB_HOST = config.get('DB_HOST', 'db')
+DB_PORT = config.get('DB_PORT', '5432')
+DB_USER = secrets.get('DB_USER', 'yacs')
+DB_PASS = secrets.get('DB_PASS', 'yacs')
 
 engine = create_engine(f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
