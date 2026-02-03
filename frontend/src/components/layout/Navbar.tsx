@@ -1,8 +1,8 @@
-import React from 'react';
-import { Bars3Icon } from '@heroicons/react/24/solid';
-import { Separator } from "./ui/Separator"
-import ClassSearch from './ClassSearch';
-import ThemeToggle from './theme/ThemeToggle';
+import React from "react";
+import { Bars3Icon } from "@heroicons/react/24/solid";
+import { Separator } from "@/components/ui/Separator";
+import ClassSearch from "@/features/schedule/components/ClassSearch";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 import { NavLink } from "react-router-dom";
 
 function Navbar() {

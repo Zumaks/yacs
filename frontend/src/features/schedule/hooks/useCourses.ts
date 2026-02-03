@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { parseCoursesFromCsvText } from "../lib/parseSchedule";
+import { fetchText } from "@/api";
+import { parseCoursesFromCsvText } from "../utils/parseSchedule";
 import type { Course } from "../types/schedule";
 
 export function useCourses(csvPath = "/fall-2024.csv") {
@@ -11,8 +12,7 @@ export function useCourses(csvPath = "/fall-2024.csv") {
     let alive = true;
     (async () => {
       try {
-        const res = await fetch(csvPath);
-        const text = await res.text();
+        const text = await fetchText(csvPath);
         const data = parseCoursesFromCsvText(text);
         if (alive) setCourses(data);
       } catch (e: any) {

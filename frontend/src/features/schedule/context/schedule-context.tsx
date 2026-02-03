@@ -7,7 +7,8 @@ import React, {
   startTransition,
 } from "react";
 import type { Course } from "../types/schedule";
-import { parseCoursesFromCsvText } from "../lib/parseSchedule";
+import { fetchText } from "@/api";
+import { parseCoursesFromCsvText } from "../utils/parseSchedule";
 
 type SelectionCtx = {
   courses: Course[];
@@ -57,8 +58,7 @@ export function ScheduleProvider({ children }: { children: React.ReactNode }) {
   const [catalog, setCatalog] = useState<Course[]>([]);
 
   const loadCsv = useCallback(async (path: string) => {
-    const res = await fetch(path);
-    const text = await res.text();
+    const text = await fetchText(path);
 
     startTransition(() => {
       const parsed = parseCoursesFromCsvText(text);

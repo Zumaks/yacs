@@ -3,7 +3,7 @@
     "target": "es5",
     "types": ["node"],
     "baseUrl": ".",
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "paths": {
       "@/*": ["src/*"]
     },
@@ -26,5 +26,12 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src/**/*.ts", "*.ts", "tailwind.config.js", "postcss.config.js"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.d.ts",
+    "*.ts",
+    "tailwind.config.js",
+    "postcss.config.js"
+  ]
 }

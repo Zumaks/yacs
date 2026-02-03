@@ -47,7 +47,7 @@ function Footer() {
           <ul className="space-y-2">
             <li><Link className="text-sm tracking-wider hover:underline" to="/request-feature">request a feature</Link></li>
             <li><Link className="text-sm tracking-wider hover:underline" to="/report-bug">report a bug</Link></li>
-            <li><a className="text-sm tracking-wider hover:underline" href="https://github.com" target="_blank" rel="noreferrer">github</a></li>
+            <li><a className="text-sm tracking-wider hover:underline" href="https://github.com" target="_blank" rel="noopener noreferrer">github</a></li>
             <li><Link className="text-sm tracking-wider hover:underline" to="/about-rcos">about RCOS</Link></li>
             <li><Link className="text-sm tracking-wider hover:underline" to="/about-yacs">about the YACS team</Link></li>
           </ul>
