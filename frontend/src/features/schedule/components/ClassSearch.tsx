@@ -2,7 +2,8 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Search as SearchIcon, X as XIcon, Check as CheckIcon } from "lucide-react";
-import { cn } from "../lib/utils";
+import { cn } from "@/lib/utils";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useSchedule } from "../context/schedule-context";
 import type { Course, Meeting } from "../types/schedule";
 
@@ -10,15 +11,6 @@ function pickDefaultMeetings(c: Course): Meeting[] {
   const chosen = new Map<string, Meeting>();
   for (const m of c.meetings) if (!chosen.has(m.type)) chosen.set(m.type, m);
   return Array.from(chosen.values());
-}
-
-function useDebounced<T>(value: T, delay = 150) {
-  const [v, setV] = React.useState(value);
-  React.useEffect(() => {
-    const t = setTimeout(() => setV(value), delay);
-    return () => clearTimeout(t);
-  }, [value, delay]);
-  return v;
 }
 
 export function ClassSearch({
@@ -37,7 +29,7 @@ export function ClassSearch({
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const deferredQuery = React.useDeferredValue(query);
-  const debouncedQuery = useDebounced(deferredQuery, 120);
+  const debouncedQuery = useDebouncedValue(deferredQuery, 120);
 
   const wrapperRef = React.useRef<HTMLDivElement | null>(null);
   const inputRef = React.useRef<HTMLInputElement | null>(null);

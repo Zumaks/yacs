@@ -2,9 +2,9 @@ import * as React from "react";
 import type { JSX } from "react";
 import { useSchedule } from "../context/schedule-context";
 import type { Course, Meeting } from "../types/schedule";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { hasScheduleConflict } from "../utils/schedule";
-import { cn } from "../lib/utils";
+import { cn } from "@/lib/utils";
 import { 
   Clock, 
   MapPin, 
