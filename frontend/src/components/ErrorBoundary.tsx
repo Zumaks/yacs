@@ -7,14 +7,14 @@ type ErrorBoundaryProps = {
 
 type ErrorBoundaryState = {
   hasError: boolean;
-  error: Error | null;
 };
 
 export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = { hasError: false, error: null };
+  state: ErrorBoundaryState = { hasError: false };
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+    void error;
+    return { hasError: true };
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
@@ -23,7 +23,7 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
   }
 
   handleReset = () => {
-    this.setState({ hasError: false, error: null });
+    this.setState({ hasError: false });
     window.location.assign("/");
   };
 
@@ -32,7 +32,7 @@ export default class ErrorBoundary extends React.Component<ErrorBoundaryProps, E
       return (
         <ErrorPage
           title="Something went wrong"
-          message="An unexpected error occurred while loading this page."
+          message="We could not load this screen. Try going back to the homepage and retrying your action."
           actionLabel="Go back home"
           onAction={this.handleReset}
         />

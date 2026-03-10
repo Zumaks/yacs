@@ -1,5 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { AppProviders } from "@/providers/AppProviders";
 import { AppRoutes } from "@/routes/AppRoutes";
 
@@ -19,12 +21,44 @@ afterAll(() => {
   global.fetch = originalFetch;
 });
 
-test("renders app shell", () => {
+test("renders app shell", async () => {
   render(
     <AppProviders>
       <AppRoutes />
     </AppProviders>
   );
 
-  expect(screen.getByText(/yacs/i)).toBeInTheDocument();
+  expect(await screen.findByRole("link", { name: /^yacs$/i })).toBeInTheDocument();
+});
+
+test("shows the not found page for invalid urls", async () => {
+  render(
+    <AppProviders>
+      <AppRoutes initialEntries={["/missing-page"]} />
+    </AppProviders>
+  );
+
+  expect(await screen.findByRole("heading", { name: /page not found/i })).toBeInTheDocument();
+  expect(screen.getByText(/doesn't exist or may have moved/i)).toBeInTheDocument();
+});
+
+test("shows the generic error page when a route crashes", () => {
+  const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => undefined);
+
+  function CrashingScreen() {
+    throw new Error("boom");
+  }
+
+  render(
+    <MemoryRouter>
+      <ErrorBoundary>
+        <CrashingScreen />
+      </ErrorBoundary>
+    </MemoryRouter>
+  );
+
+  expect(screen.getByRole("heading", { name: /something went wrong/i })).toBeInTheDocument();
+  expect(screen.getByText(/we could not load this screen/i)).toBeInTheDocument();
+
+  consoleErrorSpy.mockRestore();
 });
