@@ -62,3 +62,19 @@ test("shows the generic error page when a route crashes", () => {
 
   consoleErrorSpy.mockRestore();
 });
+
+test("shows a loading spinner while courses load", async () => {
+  const originalFetch = global.fetch;
+  global.fetch = jest.fn(() => new Promise(() => undefined)) as unknown as typeof fetch;
+
+  render(
+    <AppProviders>
+      <AppRoutes />
+    </AppProviders>
+  );
+
+  expect(await screen.findByRole("status", { name: /loading courses/i })).toBeInTheDocument();
+  expect(screen.getByText(/pulling the catalog into your schedule workspace/i)).toBeInTheDocument();
+
+  global.fetch = originalFetch;
+});

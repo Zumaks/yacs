@@ -22,6 +22,7 @@ const SelectionContext = createContext<SelectionCtx | undefined>(undefined);
 
 type CatalogCtx = {
   catalog: Course[];
+  catalogLoading: boolean;
   loadCsv: (path: string) => Promise<void>;
 };
 
@@ -56,17 +57,26 @@ export function ScheduleProvider({ children }: { children: React.ReactNode }) {
   );
 
   const [catalog, setCatalog] = useState<Course[]>([]);
+  const [catalogLoading, setCatalogLoading] = useState(false);
 
   const loadCsv = useCallback(async (path: string) => {
-    const text = await fetchText(path);
+    setCatalogLoading(true);
+    try {
+      const text = await fetchText(path);
 
-    startTransition(() => {
-      const parsed = parseCoursesFromCsvText(text);
-      setCatalog(parsed);
-    });
+      startTransition(() => {
+        const parsed = parseCoursesFromCsvText(text);
+        setCatalog(parsed);
+      });
+    } finally {
+      setCatalogLoading(false);
+    }
   }, []);
 
-  const catalogValue = useMemo<CatalogCtx>(() => ({ catalog, loadCsv }), [catalog, loadCsv]);
+  const catalogValue = useMemo<CatalogCtx>(
+    () => ({ catalog, catalogLoading, loadCsv }),
+    [catalog, catalogLoading, loadCsv]
+  );
 
   return (
     <CatalogContext.Provider value={catalogValue}>

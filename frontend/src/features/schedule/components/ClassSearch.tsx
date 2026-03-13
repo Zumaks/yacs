@@ -4,6 +4,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { Search as SearchIcon, X as XIcon, Check as CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { Spinner } from "@/components/ui/spinner";
 import { useSchedule } from "../context/schedule-context";
 import type { Course, Meeting } from "../types/schedule";
 
@@ -24,7 +25,7 @@ export function ClassSearch({
   itemHeight?: number;
   listMaxHeight?: number;
 }) {
-  const { catalog, addCourse, hasCourse } = useSchedule();
+  const { catalog, catalogLoading, addCourse, hasCourse } = useSchedule();
 
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
@@ -100,7 +101,12 @@ export function ClassSearch({
       role="listbox"
       aria-label="Search results"
     >
-      {filtered.length === 0 ? (
+      {catalogLoading ? (
+        <div className="flex items-center gap-2 p-3 text-sm opacity-80">
+          <Spinner size="sm" label="Loading course catalog" />
+          <span>Loading classes...</span>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="p-3 text-sm opacity-80">No classes found.</div>
       ) : (
         <div 
@@ -195,6 +201,7 @@ export function ClassSearch({
         <input
           ref={inputRef}
           value={query}
+          disabled={catalogLoading}
           onChange={(e) => {
             setQuery(e.target.value);
             if (!isOpen) setOpen(true);
@@ -210,9 +217,10 @@ export function ClassSearch({
           aria-expanded={isOpen}
           aria-haspopup="listbox"
           aria-controls="class-search-dropdown-listbox"
-          placeholder="Search classes..."
+          placeholder={catalogLoading ? "Loading classes..." : "Search classes..."}
           role="combobox"
         />
+        {catalogLoading && <Spinner size="sm" label="Loading course catalog" className="text-foreground/70" />}
         {query && (
           <button
             type="button"
