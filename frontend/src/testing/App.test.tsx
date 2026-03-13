@@ -78,3 +78,19 @@ test("shows a loading spinner while courses load", async () => {
 
   global.fetch = originalFetch;
 });
+
+test("shows skeleton course cards while the catalog loads", async () => {
+  const originalFetch = global.fetch;
+  global.fetch = jest.fn(() => new Promise(() => undefined)) as unknown as typeof fetch;
+
+  render(
+    <AppProviders>
+      <AppRoutes />
+    </AppProviders>
+  );
+
+  expect(await screen.findByText(/course cards will appear here as soon as the catalog finishes loading/i)).toBeInTheDocument();
+  expect(screen.getAllByTestId("course-card-skeleton")).toHaveLength(3);
+
+  global.fetch = originalFetch;
+});

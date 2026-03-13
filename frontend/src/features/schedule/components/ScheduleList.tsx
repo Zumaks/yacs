@@ -270,10 +270,43 @@ function CourseCard({
   );
 }
 
+function CourseCardSkeleton({ index }: { index: number }) {
+  return (
+    <div
+      aria-hidden="true"
+      data-testid="course-card-skeleton"
+      className="overflow-hidden rounded-xl border border-border bg-surface"
+      style={{ animationDelay: `${index * 120}ms` }}
+    >
+      <div className="animate-pulse p-3 md:p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0 flex-1 space-y-3">
+            <div className="h-5 w-3/5 rounded bg-background/70" />
+            <div className="h-3 w-2/5 rounded bg-background/50" />
+          </div>
+          <div className="flex gap-2">
+            <div className="h-8 w-8 rounded-md bg-background/60" />
+            <div className="h-8 w-8 rounded-md bg-background/60" />
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-border/50 bg-background/40 p-4">
+        <div className="space-y-3">
+          <div className="h-3 w-28 rounded bg-surface/80" />
+          <div className="grid gap-2 md:grid-cols-2">
+            <div className="h-16 rounded-lg bg-surface/80" />
+            <div className="h-16 rounded-lg bg-surface/80" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // --- Main Component ---
 
 export default function ScheduleList(): JSX.Element {
-  const { courses, removeCourse, clear, catalog, addCourse } = useSchedule();
+  const { courses, removeCourse, clear, catalog, catalogLoading, addCourse } = useSchedule();
 
   const orderRef = React.useRef<Map<string, number>>(new Map());
   React.useEffect(() => {
@@ -312,7 +345,9 @@ export default function ScheduleList(): JSX.Element {
         <div>
           <h2 className="text-xl font-bold tracking-tight text-foreground">Your Schedule</h2>
           <p className="text-sm text-muted-foreground">
-            {displayCourses.length} {displayCourses.length === 1 ? 'course' : 'courses'} selected
+            {catalogLoading
+              ? "Loading saved courses and section details"
+              : `${displayCourses.length} ${displayCourses.length === 1 ? "course" : "courses"} selected`}
           </p>
         </div>
         {displayCourses.length > 0 && (
@@ -327,7 +362,14 @@ export default function ScheduleList(): JSX.Element {
         )}
       </div>
 
-      {displayCourses.length === 0 ? (
+      {catalogLoading ? (
+        <div className="flex flex-col gap-4">
+          <p className="text-sm text-foreground/70">Course cards will appear here as soon as the catalog finishes loading.</p>
+          {[0, 1, 2].map((index) => (
+            <CourseCardSkeleton key={index} index={index} />
+          ))}
+        </div>
+      ) : displayCourses.length === 0 ? (
         <div className="flex h-32 flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface/30 text-center">
           <p className="text-sm text-muted-foreground">No classes selected yet.</p>
         </div>
