@@ -6,6 +6,9 @@ export type Meeting = {
   location: string;          // "DCC 308"
   instructor: string;        // "Dr. Alan Turing"
   section: string;           // "01", "L1", "R1", ...
+  startDate?: string;        // "2024-08-28"
+  endDate?: string;          // "2024-12-20"
+  semester?: string;         // "FALL 2024"
 };
 
 export type Course = {

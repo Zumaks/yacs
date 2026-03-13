@@ -4,6 +4,7 @@ import { useSchedule } from "../context/schedule-context";
 import type { Course, Meeting } from "../types/schedule";
 import { Button } from "@/components/ui/button";
 import { hasScheduleConflict } from "../utils/schedule";
+import { downloadScheduleIcs } from "../utils/exportSchedule";
 import { cn } from "@/lib/utils";
 import { 
   Clock, 
@@ -351,14 +352,24 @@ export default function ScheduleList(): JSX.Element {
           </p>
         </div>
         {displayCourses.length > 0 && (
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={clear}
-            className="border-border text-muted-foreground hover:bg-surface hover:text-foreground"
-          >
-            Clear all
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => downloadScheduleIcs(displayCourses)}
+              className="border-border text-muted-foreground hover:bg-surface hover:text-foreground"
+            >
+              Export ICS
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={clear}
+              className="border-border text-muted-foreground hover:bg-surface hover:text-foreground"
+            >
+              Clear all
+            </Button>
+          </div>
         )}
       </div>
 

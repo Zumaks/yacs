@@ -13,6 +13,9 @@ type RawRow = {
   course_location: string;
   course_max_enroll: string | number;
   course_enrolled: string | number;
+  course_start_date?: string;
+  course_end_date?: string;
+  semester?: string;
   course_level: string;
   course_section: string;
   short_name: string;      // e.g. "CSCI-1100"
@@ -68,6 +71,9 @@ const rowToMeeting = (r: RawRow): Meeting => ({
   location: r.course_location ?? "",
   instructor: r.course_instructor ?? "",
   section: r.course_section ?? "",
+  startDate: r.course_start_date ?? "",
+  endDate: r.course_end_date ?? "",
+  semester: r.semester ?? "",
 });
 
 const rowToCourseCore = (r: RawRow) => {
