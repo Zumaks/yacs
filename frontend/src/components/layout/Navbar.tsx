@@ -16,6 +16,8 @@ function Navbar() {
       <ClassSearch/>
     </div>
     <div className="flex items-center space-x-3 h-6 invisible sm:visible">
+      <NavLink to="/login" className={link}>Login</NavLink>
+      <Separator orientation="vertical" />
       <NavLink to="/planner" className={link}>4-Year Plan</NavLink>
       <Separator orientation="vertical" />
       <NavLink to="/" className={link} end>Schedule</NavLink>

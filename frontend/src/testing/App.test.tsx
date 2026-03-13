@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { AppProviders } from "@/providers/AppProviders";
@@ -91,6 +92,32 @@ test("shows skeleton course cards while the catalog loads", async () => {
 
   expect(await screen.findByText(/course cards will appear here as soon as the catalog finishes loading/i)).toBeInTheDocument();
   expect(screen.getAllByTestId("course-card-skeleton")).toHaveLength(3);
+
+  global.fetch = originalFetch;
+});
+
+test("shows a loading state during login submission", async () => {
+  const originalFetch = global.fetch;
+  global.fetch = jest.fn((input: RequestInfo | URL, init?: RequestInit) => {
+    if (typeof input === "string" && input === "/api/session" && init?.method === "POST") {
+      return new Promise(() => undefined);
+    }
+    return mockFetch() as unknown as Promise<Response>;
+  }) as unknown as typeof fetch;
+
+  render(
+    <AppProviders>
+      <AppRoutes initialEntries={["/login"]} />
+    </AppProviders>
+  );
+
+  userEvent.type(screen.getByLabelText(/email/i), "test@rpi.edu");
+  userEvent.type(screen.getByLabelText(/password/i), "test_password");
+  userEvent.click(screen.getByRole("button", { name: /^log in$/i }));
+
+  expect(await screen.findAllByRole("status", { name: /signing in/i })).toHaveLength(2);
+  expect(screen.getByText(/checking your credentials and starting your session/i)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /signing in/i })).toBeDisabled();
 
   global.fetch = originalFetch;
 });
